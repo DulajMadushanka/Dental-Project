@@ -1,0 +1,64 @@
+.wrapper {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+.navigationWrapper {
+  width: 100%;
+  height: 77px;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+.componentWrapper {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  background-color: white;
+  width: calc(100vw - 255px);
+  justify-content: flex-start;
+}
+.sidebarWrapper {
+  width: 255px;
+  height: 100%;
+  background-color: #EFF0F8;
+}
+.detailsWrapper {
+  height: 100%;
+  display: flex;
+  overflow: scroll;
+  align-items: center;
+  flex-direction: column;
+  width: calc(100vw - 255px);
+  justify-content: flex-start;
+}
+
+
+
+.dash-board-analytics-widget {
+  font-size: 0.875em;
+  margin-bottom: 0.25em;
+  font-weight: 500;
+  color: #ffffff;
+  background-color: #54C1FB;
+  width: 62px;
+  height: 27px;
+  border-radius: 3px;
+  border: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.dash-board-analytics-widget.red {
+  background-color: red;
+}
+
+.dash-board-analytics-widget-text {
+  text-align: center;
+}

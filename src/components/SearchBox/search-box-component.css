@@ -1,0 +1,22 @@
+.search-icon {
+  position: absolute;
+  padding-left: 10px;
+}
+.search-input {
+  width: 401px;
+  min-width: 190px;
+  height: 47px;
+  padding-left: 30px;
+  border-radius: 6px;
+  background: #FDFDFF;
+  border: 1px solid #EDF6F9;
+}
+
+.search-input:focus {
+  outline: none;
+}
+
+.search-component {
+  display: flex;
+  align-items: center;
+}

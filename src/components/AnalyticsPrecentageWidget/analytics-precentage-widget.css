@@ -1,0 +1,22 @@
+.dash-board-analytics-widget {
+  font-size: 0.875em;
+  margin-bottom: 0.25em;
+  font-weight: 500;
+  color: #ffffff;
+  background-color: #54C1FB;
+  width: 62px;
+  height: 27px;
+  border-radius: 3px;
+  border: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.dash-board-analytics-widget.red {
+  background-color: red;
+}
+
+.dash-board-analytics-widget-text {
+  text-align: center;
+}

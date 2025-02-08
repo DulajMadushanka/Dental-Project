@@ -1,0 +1,7 @@
+<svg id="x-button" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22">
+  <circle id="Ellipse_394" data-name="Ellipse 394" cx="11" cy="11" r="11" fill="red"/>
+  <g id="Group_2312" data-name="Group 2312" transform="translate(6.02 5.899)">
+    <path id="Path_3105" data-name="Path 3105" d="M149.706,147.725a.855.855,0,0,1-.606-.251l-8.3-8.3a.857.857,0,0,1,1.211-1.211l8.3,8.3a.857.857,0,0,1-.606,1.462Z" transform="translate(-140.546 -137.709)" fill="#fff"/>
+    <path id="Path_3106" data-name="Path 3106" d="M141.4,147.723a.857.857,0,0,1-.606-1.462l8.3-8.3a.857.857,0,0,1,1.211,1.211l-8.3,8.3A.854.854,0,0,1,141.4,147.723Z" transform="translate(-140.538 -137.706)" fill="#fff"/>
+  </g>
+</svg>

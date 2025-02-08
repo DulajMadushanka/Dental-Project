@@ -1,0 +1,40 @@
+.my-account-header {
+    color: #171717;
+    margin-bottom: 20px;
+    font-weight: 600;
+    font-size: 18px;
+}
+
+.my-account-container {
+    max-width: 800px;
+    margin: auto;
+    margin-bottom: 4rem;
+}
+
+.account-info {
+    background-color: #ffffff;
+    border: 1px solid #ededed;
+    border-radius: 10px;
+    padding: 3px 20px;
+
+    .my-account-name,
+    .my-account-item {
+        color: #171717;
+        font-weight: 500;
+        font-size: 14px;
+    }
+
+    .my-account-avatar {
+        .avatar {
+            height: 60px;
+            width: 60px;
+        }
+    }
+
+    .my-account-item-desc {
+        color: #525252;
+        font-size: 14px;
+        font-weight: 500;
+    }
+
+}

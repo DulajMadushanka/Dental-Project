@@ -1,0 +1,242 @@
+import React, {useEffect, useRef, useState} from 'react';
+import {connect} from 'react-redux';
+import './Styles.css';
+import _ from "lodash";
+import {Actions} from '../../../internals/app/Actions';
+import {v4 as uuid} from 'uuid';
+import {Form, Formik, useField} from 'formik';
+import * as Yup from 'yup';
+import ImageComponent from "../../../components/UploadImage";
+import ShopRepository from '../../../internals/repository/ShopRepository';
+import Dropzone from "react-dropzone";
+import S3Image from "../../../components/S3Image";
+import {generateImage} from "../../../internals/manager/ImageManager";
+import ImageRemoveIcon from "../../../assets/svgs/imageRemoveIcon.svg";
+import Select from 'react-select';
+import AddPatientModal from "../../../components/Modals/AddPatientModal";
+const { innerHeight } = window;
+
+const MyTextInput = ({label, isLable, ...props}) => {
+  const [field, meta] = useField(props);
+
+  return (
+    <div className={'add-client-input-wrapper'}>
+      <label className={'add-client-value-Text'} htmlFor={props.id || props.name}>{label}</label>
+      <input className={'add-client-input'} {...field} {...props} />
+      {meta.touched && meta.error ? (
+        <div className={'add-client-value-error-Text'}>{meta.error}</div>
+      ) : null}
+    </div>
+  );
+};
+
+export const CreatePatientView = props => {
+  const {client, status, onCloseDrawer, currentUser, selectedUserShop, onChangeProduct, createShopProduct, selectedProductShop} = props;
+  const phoneRef = useRef();
+  const initialValues = {
+    firstName: '',
+    lastName: '',
+    phoneNumber: '',
+    age: '',
+    email: ''
+  };
+  const isEdit = status === 'EDIT_CLIENT';
+  const [countryCode, setCountryCode] = useState('');
+  const [mobile, setMobile] = useState('');
+  const [pressSave, setPressSave] = useState(false);
+  const [isUploadingImage, setIsUploadingImage] = useState(false);
+  const [imageKey, setImageKey] = useState('');
+  const [selectedOption, setSelectedOption] = useState(null);
+  const [isShowQuantityError, setIsShowQuantityError] = useState(false);
+
+  const onPressSave = (values, event) => {
+    const param = {
+      patientId: uuid(),
+      firstName: values.firstName,
+      lastName: values.lastName,
+      email: values.email,
+      phoneNumber: values.phoneNumber,
+      age: values.age,
+      profileImage: imageKey,
+      createdTime: Date.now(),
+      updatedTime: Date.now(),
+      createdUserId: currentUser?.uid
+    };
+    // onChangeProduct(param);
+    // onCloseDrawer(event);
+
+    console.log("+++++++++++++++++, param", param, currentUser)
+
+  };
+
+  const onAddFile = async (acceptedFiles) => {
+    setIsUploadingImage(true)
+    const result = await ShopRepository.uploadToS3Image(acceptedFiles[0]);
+    console.log("+++++++++++++++++++, result", result);
+    if (result?.key) {
+      setImageKey(result?.key)
+    }
+    setIsUploadingImage(false);
+  };
+
+  console.log("++++++++++++++++++++++, currentUser", currentUser)
+
+  return (
+    <div className={'add-client-wrapper'}>
+      <div className="add-client-header-wrapper">
+        <div className="add-client-header-Text">{isEdit ? "Edit Patient Details" : "Add Patient"}</div>
+        <div
+          className="add-client-header-title-Text">{isEdit ? "Change selected patient’s details you want" : "Add a new patient"}</div>
+      </div>
+
+      <div className={'add-client-wrapper-info'}>
+        <Formik
+          initialValues={initialValues}
+          validationSchema={Yup.object({
+            firstName: Yup.string()
+              .required('First name must be required'),
+            phoneNumber: Yup.string()
+                .required('Phone number must be required')
+          })}
+          onSubmit={(values, {setSubmitting}) => {
+            onPressSave(values);
+          }}
+        >
+          <Form>
+            <div style={{overflow: 'scroll', height: innerHeight - 270 }} className={'add-client-form-wrapper'}>
+              <MyTextInput
+                label="First Name"
+                name="firstName"
+                type="text"
+                placeholder="First Name"
+              />
+              <MyTextInput
+                  label="Last Name"
+                  name="lastName"
+                  type="text"
+                  placeholder="Last Name"
+              />
+              <MyTextInput
+                  label="Email"
+                  name="email"
+                  type="text"
+                  placeholder="Email"
+              />
+              <MyTextInput
+                  label="Phone Number"
+                  name="phoneNumber"
+                  type="text"
+                  placeholder="Phone Number"
+              />
+              {/*<div style={{marginTop: '10px'}}>*/}
+              {/*  <label className={'add-client-value-Text'}>Quantity type</label>*/}
+                <div style={{marginTop: '10px'}}>
+                  <Select
+                    isMulti={true}
+                    value={selectedOption}
+                    onChange={(data) => {
+                      console.log("+++++++++++++++++++++++++++, data", data)
+                      setSelectedOption(data);
+                      setIsShowQuantityError(false);
+                    }}
+                    options={options}
+                    styles={customStyles}
+                  />
+                </div>
+              {/*  {*/}
+              {/*    isShowQuantityError ?*/}
+              {/*      <div className={'add-client-value-error-Text'}>Quantity type is required</div>*/}
+              {/*      : null*/}
+              {/*  }*/}
+              {/*</div>*/}
+              <MyTextInput
+                label="Age"
+                name="age"
+                type="text"
+                placeholder="Age"
+              />
+              <div className={'add-client-input-wrapper'} style={{marginBottom: '10px'}}>
+                <label className={'add-client-value-Text'}>Profile image</label>
+              </div>
+              {
+                imageKey  ?
+                  <div className="w-auto flex relative flex-row h-48 rounded-lg border-dashed border border-sky-500">
+                    <S3Image
+                      url={generateImage(imageKey)}
+                      className="w-auto rounded-lg"
+                    />
+                    <img
+                      alt="remove"
+                      src={ImageRemoveIcon}
+                      onClick={() => setImageKey('')}
+                      className="w-6 absolute right-2 top-2 cursor-pointer"
+                    />
+                  </div>
+                  :
+                  <div>
+                    <Dropzone
+                      multiple={false}
+                      onDrop={onAddFile}
+                      accept={{
+                        "image/png": [".png", ".jpeg", ".HEIC", ".JPG"],
+                      }}
+                    >
+                      {({ getRootProps, getInputProps }: any) => (
+                        <ImageComponent
+                          getRootProps={getRootProps}
+                          getInputProps={getInputProps}
+                          loadingAction={isUploadingImage}
+                        />
+                      )}
+                    </Dropzone>
+                  </div>
+              }
+            </div>
+            <div className="add-client-bottom-wrapper">
+              <div className="add-client-btn-wrapper">
+                <button className="add-client-save-btn" type="submit">{'Create Patient'}</button>
+                <button className="add-client-discard-btn" onClick={(event) => onCloseDrawer(event)}>Discard</button>
+              </div>
+            </div>
+          </Form>
+
+        </Formik>
+      </div>
+    </div>
+  );
+};
+
+export default connect(
+  state => ({
+    selectedProductShop: state.shop.get('selectedProductShop'),
+    currentUser: state.login.get('currentUser'),
+  }),
+  ({
+    createShopProduct: Actions.shop.createShopProduct,
+    updateClient: Actions.client.updateClient,
+  }),
+)(CreatePatientView);
+
+const options = [
+  { value: 'kg', label: 'kg' },
+  { value: 'g', label: 'g' },
+  { value: 'bottle', label: 'bottle' },
+  { value: 'pieces', label: 'pieces' },
+  { value: 'items', label: 'items' },
+  { value: 'liter', label: 'liter' },
+  { value: 'packets', label: 'packets' }
+];
+
+const customStyles = {
+  control: (base: any) => ({
+    ...base,
+    minHeight: "45px",
+    boxShadow: "none",
+    borderRadius: "8px",
+    borderColor: "#97C0EB",
+    "&:hover": {
+      borderColor: "#D0D5DD",
+    },
+  }),
+};
+

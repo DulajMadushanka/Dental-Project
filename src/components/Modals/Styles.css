@@ -1,0 +1,16 @@
+.file-upload-icon:hover{
+    cursor: pointer;
+}
+
+.file-upload-icon {
+    min-height: 6rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /*border: 1px dashed #EFF0F8;*/
+    border-radius: 4px;
+    cursor: pointer;
+    background-color: #FFFFFF;
+    margin-top: 10px;
+    position: relative;
+}
